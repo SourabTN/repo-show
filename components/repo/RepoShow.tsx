@@ -9,6 +9,7 @@ function RepoShow({}: RepoShowProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [downloading, setDownloading] = useState(false);
+  const [id, setId] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,12 +33,13 @@ function RepoShow({}: RepoShowProps) {
     fetchData();
   }, []);
 
-  console.log(data);
+  console.log(id);
 
   const handleDownload = async (repoName: string) => {
     setDownloading(true);
-
     const repo = data.find((repo: any) => repo.name === repoName);
+    setId(repo.id);
+    console.log(repo);
 
     const filesResponse = await fetch(repo.contents_url.replace("{+path}", ""));
     const files = await filesResponse.json();
@@ -72,23 +74,28 @@ function RepoShow({}: RepoShowProps) {
       <div className="col-span-2 text-center font-bold text-xl">
         GitHub Repo Portfolio
       </div>
-      {data?.map((repo: any, idx: number) => (
-        <div
-          key={idx}
-          className="bg-white py-4 px-4 rounded-xl flex flex-col gap-4"
-        >
-          <p className=" text-lg font-medium">Project #{idx + 1}</p>
-          <p className=" text-lg ">
-            <span className="font-medium">Project Name:</span> {repo.name}
-          </p>
-          <button
-            onClick={() => handleDownload(repo.name)}
-            className="bg-blue-500 w-fit self-end px-4 py-1.5 rounded-lg text-white font-semibold hover:bg-blue-700"
+      {isLoading ? (
+        <div className="text-center w-full col-span-2">Getting Data...</div>
+      ) : (
+        data?.map((repo: any, idx: number) => (
+          <div
+            key={idx}
+            className="bg-white py-4 px-4 rounded-xl flex flex-col gap-4"
           >
-            {downloading ? "Downloading..." : "Download"}
-          </button>
-        </div>
-      ))}
+            <p className=" text-lg font-medium">Project #{idx + 1}</p>
+            <p className=" text-lg font-medium">ID #{repo.id}</p>
+            <p className=" text-lg ">
+              <span className="font-medium">Project Name:</span> {repo.name}
+            </p>
+            <button
+              onClick={() => handleDownload(repo.name)}
+              className="bg-blue-500 w-fit self-end px-4 py-1.5 rounded-lg text-white font-semibold hover:bg-blue-700"
+            >
+              {repo.id === id && downloading ? "Downloading..." : "Download"}
+            </button>
+          </div>
+        ))
+      )}
     </div>
   );
 }
