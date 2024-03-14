@@ -33,13 +33,13 @@ function RepoShow({}: RepoShowProps) {
     fetchData();
   }, []);
 
-  console.log(id);
+  // console.log(id);
 
   const handleDownload = async (repoName: string) => {
     setDownloading(true);
     const repo = data.find((repo: any) => repo.name === repoName);
     setId(repo.id);
-    console.log(repo);
+    // console.log(repo);
 
     const filesResponse = await fetch(repo.contents_url.replace("{+path}", ""));
     const files = await filesResponse.json();
