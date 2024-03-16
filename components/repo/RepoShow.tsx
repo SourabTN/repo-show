@@ -1,6 +1,7 @@
 "use client";
 import JSZip from "jszip";
 import React, { useEffect, useState } from "react";
+import { format } from "date-fns";
 
 type RepoShowProps = {};
 
@@ -82,11 +83,21 @@ function RepoShow({}: RepoShowProps) {
             key={idx}
             className="bg-white py-4 px-4 rounded-xl flex flex-col gap-4"
           >
-            <p className=" text-lg font-medium">Project #{idx + 1}</p>
-            <p className=" text-lg font-medium">ID #{repo.id}</p>
-            <p className=" text-lg ">
-              <span className="font-medium">Project Name:</span> {repo.name}
-            </p>
+            <div className="h-full">
+              <p className=" text-lg font-medium">Project #{idx + 1}</p>
+              <p className=" text-lg ">
+                <span className="font-medium">Project Name:</span> {repo.name}
+              </p>
+              <p className=" text-lg ">
+                <span className="font-medium">Created At:</span>{" "}
+                {formatDate(repo.created_at)}
+              </p>
+              {repo.language && (
+                <p className=" text-lg ">
+                  <span className="font-medium">Language:</span> {repo.language}
+                </p>
+              )}
+            </div>
             <button
               onClick={() => handleDownload(repo.name)}
               className="bg-blue-500 w-fit self-end px-4 py-1.5 rounded-lg text-white font-semibold hover:bg-blue-700"
@@ -101,3 +112,8 @@ function RepoShow({}: RepoShowProps) {
 }
 
 export default RepoShow;
+
+export function formatDate(input: any) {
+  const date = new Date(input);
+  return format(date, "MMMM d, yyyy 'at' h:mm a");
+}
